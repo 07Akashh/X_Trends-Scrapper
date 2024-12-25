@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Trends</title>
+</head>
+<body>
+    <h1>Twitter Trends</h1>
+    <button id="run-script">Click here to run the script</button>
+    <div id="results"></div>
+
+    <script>
+        const runScript = () => {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Loading trends...</p>';
+
+            fetch('/run-script', { method: 'POST' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const trendsHtml = `
+                        <h2>These are the most happening topics as of ${new Date(data.createdAt).toLocaleString()}</h2>
+                        <ul>
+                            <li>${data?.nameoftrend1 || 'N/A'}</li>
+                            <li>${data?.nameoftrend2 || 'N/A'}</li>
+                            <li>${data?.nameoftrend3 || 'N/A'}</li>
+                            <li>${data?.nameoftrend4 || 'N/A'}</li>
+                        </ul>
+                        <p>The IP address used for this query was ${data.ip_address}</p>
+                        <h3>Here’s a JSON extract of this record from the MongoDB:</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                        <br>
+                        <button id="run-again">Click here to run the query again</button>
+                    `;
+                    resultsDiv.innerHTML = trendsHtml;
+
+                    document.getElementById('run-again').addEventListener('click', () => {
+                        runScript();
+                    });
+                })
+                .catch(error => {
+                    resultsDiv.innerHTML = `
+                        <p style="color: red;">Failed to fetch data: ${error.message}</p>
+                    `;
+                });
+        };
+
+        document.getElementById('run-script').addEventListener('click', runScript);
+    </script>
+</body>
+</html>
