@@ -15,7 +15,7 @@
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '<p>Loading trends...</p>';
 
-            fetch('/api/run-script', { method: 'POST' })
+            fetch('/api/trends', { method: 'POST' })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
