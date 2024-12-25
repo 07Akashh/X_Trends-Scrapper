@@ -11,7 +11,7 @@ connectDB();
 app.use(express.json());
 app.use('/', express.static('public'));
 
-app.post('/run-script', trendsController.runScript);
-app.get('/latest', trendsController.getLatest);
+app.post('/api/run-script', trendsController.runScript);
+app.get('/api/latest', trendsController.getLatest);
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
