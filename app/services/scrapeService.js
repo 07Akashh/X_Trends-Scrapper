@@ -64,7 +64,6 @@ const scrapeTrendingHashtags = async (driver) => {
         return;
     }
     const trendingTexts = await Promise.all(trendingItems.map(async (item) => await item.getText()));
-
     const trendsObject = trendingTexts.reduce((acc, tags, index) => {
         acc[`nameoftrend${index + 1}`] = tags;
         return acc;
