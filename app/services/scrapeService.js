@@ -56,11 +56,17 @@ const loginToX = async (driver) => {
 
 const scrapeTrendingHashtags = async (driver) => {
     const trendsSection = await driver.findElement(By.css('[aria-label="Timeline: Trending now"]'));
-    const trends = await trendsSection.findElements(By.css('span'));
-    const trendsText = await Promise.all(trends.map(trend => trend.getText()));
-    const uniqueHashtags = [...new Set(trendsText.filter(text => text.startsWith('#')))];
-    const trendsObject = uniqueHashtags.reduce((acc, hashtag, index) => {
-        acc[`nameoftrend${index + 1}`] = hashtag;
+    const trendingItems = await trendsSection.findElements(By.css(
+        'div[dir="ltr"].css-146c3p1.r-bcqeeo.r-1ttztb7.r-qvutc0.r-37j5jr.r-a023e6.r-rjixqe.r-b88u0q.r-1bymd8e'
+    ));
+    if (!trendingItems || trendingItems.length === 0) {
+        console.log('No trending items found.');
+        return;
+    }
+    const trendingTexts = await Promise.all(trendingItems.map(async (item) => await item.getText()));
+
+    const trendsObject = trendingTexts.reduce((acc, tags, index) => {
+        acc[`nameoftrend${index + 1}`] = tags;
         return acc;
     }, {});
     return trendsObject;
